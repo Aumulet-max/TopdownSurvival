@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text timeText;
     public TMP_Text healthText;
     public TMP_Text messageText;
+    public TMP_Text ammoText;
+    public TMP_Text reserveAmmoText;
     private int score = 0;
     private float timeLeft;
     private bool isGameOver = false;
@@ -173,6 +175,25 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().buildIndex
         );
+    }
+
+    public void SetAmmo(int currentAmmo, int magazineSize, int reserveAmmo)
+    {
+        if (ammoText != null)
+        {
+            ammoText.text =
+                "Ammo: " +
+                currentAmmo +
+                "/" +
+                magazineSize;
+        }
+
+        if (reserveAmmoText != null)
+        {
+            reserveAmmoText.text =
+                "magazine: " +
+                reserveAmmo;
+        }
     }
 }
 

@@ -19,7 +19,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(manager.gameDuration);
+        //Debug.Log(manager.gameDuration);
     }
 
     private IEnumerator SpawnLoop()
