@@ -1778,6 +1778,7 @@ GameObject:
   - component: {fileID: 4617311004935347474}
   - component: {fileID: 9218810586822038865}
   - component: {fileID: 7035987163161223348}
+  - component: {fileID: 2962349940985617094}
   m_Layer: 0
   m_Name: P02
   m_TagString: Untagged
@@ -1877,6 +1878,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 4
   m_CollisionDetection: 0
+--- !u!114 &2962349940985617094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535647646396653931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749f784d322545641813b0510bb9c199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  moveSpeed: 2.5
+  maxHealth: 1
+  touchDamage: 1
+  scoreValue: 10
+  ammo: {fileID: 8440447111604682662, guid: d8747a9f2cdd8634b9af0fdedf11218b, type: 3}
+  healthPack: {fileID: 6885380522521484679, guid: be8e2fadd43206b4ba89be3bfcab151c, type: 3}
+  ammoDropChance: 15
+  healthPackDropChance: 10
 --- !u!1 &5690132157328462701
 GameObject:
   m_ObjectHideFlags: 0
