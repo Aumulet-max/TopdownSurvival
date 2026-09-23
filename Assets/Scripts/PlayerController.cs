@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -154,9 +155,11 @@ public class PlayerController : MonoBehaviour
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            if (reserveAmmo > 0)
+            if (reserveAmmo > 0 )
             {
+             
                 Reload();
+
             }
         }
     }
@@ -171,11 +174,12 @@ public class PlayerController : MonoBehaviour
         );
         GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
+    
 
     private void Reload()
     {
+    
         reserveAmmo--;
-        
         currentAmmo = magazineSize;
         GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
