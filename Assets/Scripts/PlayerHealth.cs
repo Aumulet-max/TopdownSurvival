@@ -48,5 +48,9 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
+    public bool HasHealth()
+    {
+        return currentHealth <maxHealth;
+    }
 }
 

@@ -14,6 +14,14 @@ public class EnemyController : MonoBehaviour
     private Rigidbody rb;
     private Transform player;
     private bool isDead = false;
+    public GameObject ammo;
+    public GameObject healthPack;
+
+    [Range(0f, 100f)]
+    public float ammoDropChance = 15f;
+
+    [Range(0f, 100f)]
+    public float healthPackDropChance = 10f;
 
     private void Start()
     {
@@ -84,7 +92,9 @@ public class EnemyController : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+            Drop();
         }
+
     }
 
     private void Die()
@@ -114,6 +124,28 @@ public class EnemyController : MonoBehaviour
             );
 
             Destroy(gameObject);
+        }
+    }
+
+    private void Drop()
+    {
+        float randomValue = Random.Range(0f, 100f);
+        Debug.Log("Random Value: " + randomValue);
+        if (randomValue < ammoDropChance)
+        {
+            Instantiate(
+                ammo,
+                transform.position,
+                Quaternion.identity
+            );
+        }
+        else if (randomValue < ammoDropChance + healthPackDropChance)
+        {
+            Instantiate(
+                healthPack,
+                transform.position,
+                Quaternion.identity
+            );
         }
     }
 }
