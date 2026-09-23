@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,6 +16,10 @@ Rigidbody rb;
     private Vector3 moveDirection;
     private Quaternion targetRotation;
     private float nextShootTime;
+
+    public int magazineSize = 30;
+    public int currentAmmo = 30;
+    public int reserveAmmo = 5;
 
     private void Awake()
     {
@@ -139,10 +144,23 @@ Rigidbody rb;
         if (Mouse.current.leftButton.isPressed &&
             Time.time >= nextShootTime)
         {
-            Shoot();
+            if (currentAmmo > 0)
+            {
+                Shoot();
 
-            nextShootTime =
-                Time.time + shootCooldown;
+                nextShootTime =
+                    Time.time + shootCooldown;
+            }
+        }
+
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            if (reserveAmmo > 0 )
+            {
+             
+                Reload();
+
+            }
         }
     }
 
@@ -154,6 +172,39 @@ Rigidbody rb;
             firePoint.position,
             firePoint.rotation
         );
+        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+    }
+    
+
+    private void Reload()
+    {
+    
+        reserveAmmo--;
+        currentAmmo = magazineSize;
+        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("ammo"))
+        {
+            Debug.Log("Picked up ammo");
+            reserveAmmo++;
+            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+            Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("health"))
+        {
+            Debug.Log("Picked up health");
+            PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth != null && playerHealth.HasHealth())
+            {
+                playerHealth.TakeDamage(-1); // Heal 1 health
+            }
+
+            Destroy(other.gameObject);
+        }
+
     }
 }
 

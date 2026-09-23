@@ -29,15 +29,21 @@ public class Bullet : MonoBehaviour
             return;
         }
 
+        if (other.CompareTag("ammo") || other.CompareTag("health"))
+        {
+            return;
+        }
+
         // ตรวจว่าเป็น Enemy หรือไม่
         if (other.TryGetComponent<EnemyController>(
             out EnemyController enemy))
         {
             enemy.TakeDamage(damage);
+            
         }
 
-        // Bullet หายเมื่อชนวัตถุ
         Destroy(gameObject);
+        
     }
 }
 

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5983113099452730955}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -159,3 +159,7 @@ MonoBehaviour:
   maxHealth: 1
   touchDamage: 1
   scoreValue: 10
+  ammo: {fileID: 8440447111604682662, guid: d8747a9f2cdd8634b9af0fdedf11218b, type: 3}
+  healthPack: {fileID: 6885380522521484679, guid: be8e2fadd43206b4ba89be3bfcab151c, type: 3}
+  ammoDropChance: 30
+  healthPackDropChance: 20
