@@ -3789,7 +3789,7 @@ GameObject:
   - component: {fileID: -9096453275646110547}
   - component: {fileID: 4170826559659685357}
   m_Layer: 0
-  m_Name: C01
+  m_Name: Enemys
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
