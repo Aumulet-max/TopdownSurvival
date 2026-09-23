@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float shootCooldown = 0.2f;
+    //public GameObject FireEffect;
+    //public GameObject ReloadEffect;
     private Rigidbody rb;
     private Camera mainCamera;
     private Vector3 moveDirection;
@@ -148,7 +150,12 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
+<<<<<<< Updated upstream
         Instantiate(
+=======
+        currentAmmo--;
+        Instantiate(  
+>>>>>>> Stashed changes
             bulletPrefab,
             firePoint.position,
             firePoint.rotation
