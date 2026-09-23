@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour
     public int magazineSize = 30;
     public int currentAmmo = 30;
     public int reserveAmmo = 5;
+    public float reloadTime = 0.2f;
+    public bool isReloading = false;
+
 
     private void Awake()
     {
@@ -154,9 +158,13 @@ public class PlayerController : MonoBehaviour
 
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            if (reserveAmmo > 0)
+            if (reserveAmmo > 0 )
             {
+             
                 Reload();
+
+
+
             }
         }
     }
@@ -171,11 +179,12 @@ public class PlayerController : MonoBehaviour
         );
         GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
+    
 
     private void Reload()
     {
+    
         reserveAmmo--;
-        
         currentAmmo = magazineSize;
         GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
