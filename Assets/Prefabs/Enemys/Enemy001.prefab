@@ -3785,13 +3785,12 @@ GameObject:
   m_Component:
   - component: {fileID: 5762902411667128209}
   - component: {fileID: 5762902411660218455}
+  - component: {fileID: 7544120918592457332}
   - component: {fileID: 4179389409068318902}
-  - component: {fileID: -9096453275646110547}
   - component: {fileID: 4170826559659685357}
-  - component: {fileID: 2776873480265364142}
   m_Layer: 0
-  m_Name: C01
-  m_TagString: Untagged
+  m_Name: Enemy001
+  m_TagString: enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3841,6 +3840,26 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7544120918592457332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5762902411667481585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 749f784d322545641813b0510bb9c199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  moveSpeed: 2.5
+  maxHealth: 1
+  touchDamage: 1
+  scoreValue: 10
+  ammo: {fileID: 7145165998672086327, guid: 8770d27f5bc0e63428730c248a356499, type: 3}
+  healthPack: {fileID: 4505828846205012363, guid: fae10db32f1220544bc70f50b1783cd3, type: 3}
+  ammoDropChance: 15
+  healthPackDropChance: 10
 --- !u!54 &4179389409068318902
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3868,26 +3887,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 4
   m_CollisionDetection: 0
---- !u!114 &-9096453275646110547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5762902411667481585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 749f784d322545641813b0510bb9c199, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  moveSpeed: 2.5
-  maxHealth: 1
-  touchDamage: 1
-  scoreValue: 10
-  ammo: {fileID: 7145165998672086327, guid: 8770d27f5bc0e63428730c248a356499, type: 3}
-  healthPack: {fileID: 4505828846205012363, guid: fae10db32f1220544bc70f50b1783cd3, type: 3}
-  ammoDropChance: 15
-  healthPackDropChance: 10
 --- !u!65 &4170826559659685357
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3909,26 +3908,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.79, z: 0}
---- !u!114 &2776873480265364142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5762902411667481585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 749f784d322545641813b0510bb9c199, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  moveSpeed: 2.5
-  maxHealth: 1
-  touchDamage: 1
-  scoreValue: 10
-  ammo: {fileID: 8440447111604682662, guid: d8747a9f2cdd8634b9af0fdedf11218b, type: 3}
-  healthPack: {fileID: 6885380522521484679, guid: be8e2fadd43206b4ba89be3bfcab151c, type: 3}
-  ammoDropChance: 15
-  healthPackDropChance: 10
 --- !u!1 &5762902411667481589
 GameObject:
   m_ObjectHideFlags: 0
