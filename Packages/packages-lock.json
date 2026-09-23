@@ -63,6 +63,15 @@
       },
       "url": "https://packages.unity.com"
     },
+<<<<<<< Updated upstream
+=======
+    "com.unity.ide.vscode": {
+      "version": "file:com.unity.ide.vscode",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+>>>>>>> Stashed changes
     "com.unity.inputsystem": {
       "version": "1.20.0",
       "depth": 0,
