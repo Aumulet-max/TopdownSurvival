@@ -3788,9 +3788,8 @@ GameObject:
   - component: {fileID: 4179389409068318902}
   - component: {fileID: -9096453275646110547}
   - component: {fileID: 4170826559659685357}
-  - component: {fileID: 2776873480265364142}
   m_Layer: 0
-  m_Name: C01
+  m_Name: Enemys
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3909,26 +3908,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.5, z: 1}
   m_Center: {x: 0, y: 0.79, z: 0}
---- !u!114 &2776873480265364142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5762902411667481585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 749f784d322545641813b0510bb9c199, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  moveSpeed: 2.5
-  maxHealth: 1
-  touchDamage: 1
-  scoreValue: 10
-  ammo: {fileID: 8440447111604682662, guid: d8747a9f2cdd8634b9af0fdedf11218b, type: 3}
-  healthPack: {fileID: 6885380522521484679, guid: be8e2fadd43206b4ba89be3bfcab151c, type: 3}
-  ammoDropChance: 15
-  healthPackDropChance: 10
 --- !u!1 &5762902411667481589
 GameObject:
   m_ObjectHideFlags: 0
