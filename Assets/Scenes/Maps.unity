@@ -717,6 +717,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -842,6 +843,20 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e737d4867fc6941a916da3435d9a06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraMove
+  playerTransform: {fileID: 691577590}
+  smoothSpeed: 0.125
 --- !u!1 &373599693
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,6 +2089,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0534732, y: 1.9148746, z: 1.8242041}
   m_Center: {x: 0.026736617, y: 0.4574374, z: -0.38595456}
+--- !u!4 &691577590 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5511580575510236138, guid: 732f4a07c23d64a4895a48ecf159f277, type: 3}
+  m_PrefabInstance: {fileID: 7441937126424646241}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &695665429
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3492,6 +3512,9 @@ MonoBehaviour:
   bulletPrefab: {fileID: 2618230025607802745, guid: 93378e588f1571b4493fb1b8222ea160, type: 3}
   firePoint: {fileID: 946828972}
   shootCooldown: 0.2
+  magazineSize: 30
+  currentAmmo: 30
+  reserveAmmo: 5
 --- !u!114 &1055423828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4257,8 +4280,8 @@ MonoBehaviour:
   - {fileID: 1839537046}
   - {fileID: 717596182}
   - {fileID: 1859434058}
-  spawnInterval: 1.5
   firstSpawnDelay: 1
+  manager: {fileID: 0}
 --- !u!4 &1270174589
 Transform:
   m_ObjectHideFlags: 0
@@ -5427,6 +5450,8 @@ MonoBehaviour:
   timeText: {fileID: 679515313}
   healthText: {fileID: 2096815049}
   messageText: {fileID: 258645626}
+  ammoText: {fileID: 0}
+  reserveAmmoText: {fileID: 0}
 --- !u!4 &1702015597
 Transform:
   m_ObjectHideFlags: 0
