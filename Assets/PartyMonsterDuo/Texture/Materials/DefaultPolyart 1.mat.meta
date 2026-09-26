@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/PartyMonsterDuo/Texture/Materials/DefaultPolyart 1.mat.meta
 guid: a3b4ba9a694bd6a46a60d7453ce00d64
 NativeFormatImporter:
+=======
+guid: 452f01c30d09b204599b86528ea3a1c1
+PrefabImporter:
+>>>>>>> Stashed changes:Assets/Prefabs/Enemys/Enemys.prefab.meta
   externalObjects: {}
   mainObjectFileID: 2100000
   userData: 
