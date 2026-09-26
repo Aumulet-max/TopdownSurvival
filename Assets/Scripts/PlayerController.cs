@@ -16,10 +16,15 @@ Rigidbody rb;
     private Vector3 moveDirection;
     private Quaternion targetRotation;
     private float nextShootTime;
-
     public int magazineSize = 30;
     public int currentAmmo = 30;
     public int reserveAmmo = 5;
+    public float reloadTime = 1.5f;
+    private bool isReloading = true;
+
+    public float dashforce = 200f;
+    public float dashCooldown = 3f;
+    private bool canDash = true;
 
     private void Awake()
     {
@@ -41,6 +46,8 @@ Rigidbody rb;
         ReadMovementInput();
         AimAtMouse();
         ReadShootingInput();
+
+        
     }
 
     private void FixedUpdate()
@@ -68,6 +75,11 @@ Rigidbody rb;
 
         if (Keyboard.current.aKey.isPressed)
             horizontal -= 1f;
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && canDash)
+        {
+            Debug.Log("Dashing0");
+            Dash();
+        }
 
         Vector3 input =
             new Vector3(horizontal, 0f, vertical);
@@ -153,7 +165,7 @@ Rigidbody rb;
             }
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (Mouse.current.rightButton.wasPressedThisFrame && isReloading)
         {
             if (reserveAmmo > 0 )
             {
@@ -179,10 +191,11 @@ Rigidbody rb;
 
     private void Reload()
     {
-    
+        isReloading = false;
         reserveAmmo--;
         currentAmmo = magazineSize;
         GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        Invoke(nameof(FinishReload), reloadTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -206,6 +219,31 @@ Rigidbody rb;
             Destroy(other.gameObject);
         }
 
+    }
+
+    public void FinishReload()
+    {
+        isReloading = true;
+    }
+
+    private void Dash()
+    {
+        if (canDash)
+        {
+            Debug.Log("Dashing");
+            canDash = false;
+
+            Vector3 direction = transform.forward;
+
+            rb.AddForce(direction * dashforce, ForceMode.Impulse);
+
+            Invoke(nameof(ResetDash), dashCooldown);
+        }
+    }
+
+    private void ResetDash()
+    {
+        canDash = true;
     }
 }
 
