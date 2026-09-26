@@ -1402,8 +1402,6 @@ RectTransform:
   - {fileID: 2096815048}
   - {fileID: 679515312}
   - {fileID: 258645625}
-  - {fileID: 1016882248}
-  - {fileID: 1861334009}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5479,8 +5477,8 @@ MonoBehaviour:
   timeText: {fileID: 679515313}
   healthText: {fileID: 2096815049}
   messageText: {fileID: 258645626}
-  ammoText: {fileID: 1016882249}
-  reserveAmmoText: {fileID: 1861334010}
+  ammoText: {fileID: 0}
+  reserveAmmoText: {fileID: 0}
 --- !u!4 &1702015597
 Transform:
   m_ObjectHideFlags: 0
