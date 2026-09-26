@@ -166,6 +166,7 @@ Rigidbody rb;
 
     private void Shoot()
     {
+        currentAmmo--;
         Instantiate(  
 
             bulletPrefab,
