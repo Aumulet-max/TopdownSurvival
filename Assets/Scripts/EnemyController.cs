@@ -131,21 +131,31 @@ public class EnemyController : MonoBehaviour
     {
         float randomValue = Random.Range(0f, 100f);
         Debug.Log("Random Value: " + randomValue);
+
         if (randomValue < ammoDropChance)
         {
-            Instantiate(
-                ammo,
-                transform.position,
-                Quaternion.identity
-            );
+            // ตรวจสอบว่ามี Prefab Ammo หรือยัง
+            if (ammo != null)
+            if (ammo != null)
+            {
+                Instantiate(ammo, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogWarning("ยังไม่ได้ตั้งค่า Prefab 'ammo' ใน Inspector!");
+            }
         }
         else if (randomValue < ammoDropChance + healthPackDropChance)
         {
-            Instantiate(
-                healthPack,
-                transform.position,
-                Quaternion.identity
-            );
+            // ตรวจสอบว่ามี Prefab HealthPack หรือยัง
+            if (healthPack != null)
+            {
+                Instantiate(healthPack, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogWarning("ยังไม่ได้ตั้งค่า Prefab 'healthPack' ใน Inspector!");
+            }
         }
     }
 }

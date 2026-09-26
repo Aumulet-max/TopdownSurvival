@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float shootCooldown = 0.2f;
-    private Rigidbody rb;
+Rigidbody rb;
     private Camera mainCamera;
     private Vector3 moveDirection;
     private Quaternion targetRotation;
@@ -166,8 +166,8 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
-        currentAmmo--;
-        Instantiate(
+        Instantiate(  
+
             bulletPrefab,
             firePoint.position,
             firePoint.rotation
