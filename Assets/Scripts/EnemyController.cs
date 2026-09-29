@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -22,6 +23,9 @@ public class EnemyController : MonoBehaviour
 
     [Range(0f, 100f)]
     public float healthPackDropChance = 10f;
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private float deathAnimationTime = 1f;
 
     private void Start()
     {
@@ -80,6 +84,8 @@ public class EnemyController : MonoBehaviour
             Quaternion.LookRotation(direction);
 
         rb.MoveRotation(rotation);
+
+        animator.SetFloat("Speed", direction.magnitude);
     }
 
     public void TakeDamage(int damage)
@@ -107,6 +113,8 @@ public class EnemyController : MonoBehaviour
                 scoreValue
             );
         }
+        
+
 
         Destroy(gameObject);
     }
