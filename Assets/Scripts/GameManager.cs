@@ -1,7 +1,8 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,13 +14,25 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public TMP_Text scoreText;
     public TMP_Text timeText;
-    public TMP_Text healthText;
-    public TMP_Text messageText;
+    public Slider healthSlider; // เปลี่ยนจาก TMP_Text เป็น Slider
+    public TMP_Text messageText;        // ข้อความแจ้งเตือนระหว่างเล่น (เก็บไว้ ไม่ต้องปิดมัน)
     public TMP_Text ammoText;
     public TMP_Text reserveAmmoText;
+
+    [Header("Game Over / Win UI Panel")]
+    public GameObject gameOverPanel;     // ลาก Panel ป๊อปอัปมาใส่
+    public TMP_Text finalScoreText;    // Text แสดงผลคะแนนในป๊อปอัปโดยเฉพาะ
+    public string mainMenuSceneName = "MainMenu"; // ชื่อ Scene หน้าเมนูหลักของคุณ
+
     private int score = 0;
     private float timeLeft;
     private bool isGameOver = false;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip shootSound;
+    public AudioClip winClip;
+    public AudioClip loseClip;
 
     public bool IsGameOver
     {
@@ -46,6 +59,17 @@ public class GameManager : MonoBehaviour
         timeLeft = gameDuration;
         score = 0;
         isGameOver = false;
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        // ซ่อน Panel จบเกมตอนเริ่มเล่น
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(false);
+        }
 
         if (messageText != null)
         {
@@ -84,9 +108,9 @@ public class GameManager : MonoBehaviour
     {
         if (timeText != null)
         {
-            timeText.text =
-                "Time: " +
-                Mathf.CeilToInt(timeLeft);
+            timeText.text = Mathf.CeilToInt(timeLeft).ToString();
+
+            
         }
     }
 
@@ -108,17 +132,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetHealth(
-        int currentHealth,
-        int maxHealth)
+    public void SetHealth(int currentHealth, int maxHealth)
     {
-        if (healthText != null)
+        if (healthSlider != null)
         {
-            healthText.text =
-                "HP: " +
-                currentHealth +
-                "/" +
-                maxHealth;
+            healthSlider.maxValue = maxHealth;      // กำหนดค่าเลือดสูงสุด (เช่น 3)
+            healthSlider.value = currentHealth;     // อัปเดตเลือดปัจจุบันตามที่ลดหรือเพิ่ม
         }
     }
 
@@ -128,12 +147,10 @@ public class GameManager : MonoBehaviour
             return;
 
         isGameOver = true;
+        PlaySound(loseClip);
 
-        ShowMessage(
-            "GAME OVER\n" +
-            "Score: " + score +
-            "\nPress R to Restart"
-        );
+        // แสดง UI หน้าจอจบเกมแบบแพ้
+        ShowEndGameUI("GAME OVER", "Score: " + score);
     }
 
     private void WinGame()
@@ -142,21 +159,28 @@ public class GameManager : MonoBehaviour
             return;
 
         isGameOver = true;
+        PlaySound(winClip);
 
-        ShowMessage(
-            "YOU SURVIVED!\n" +
-            "Score: " + score +
-            "\nPress R to Restart"
-        );
+        // แสดง UI หน้าจอจบเกมแบบชนะ
+        ShowEndGameUI("YOU SURVIVED!", "Score: " + score);
     }
 
-    private void ShowMessage(string message)
+    private void ShowEndGameUI(string title, string details)
     {
-        if (messageText == null)
-            return;
+        // 1. เปิด Panel ป๊อปอัปขึ้นมา
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
 
-        messageText.gameObject.SetActive(true);
-        messageText.text = message;
+        // 2. แสดงข้อความเฉพาะในกล่องป๊อปอัป (Final Score Text) เท่านั้น
+        if (finalScoreText != null)
+        {
+            finalScoreText.gameObject.SetActive(true);
+            finalScoreText.text = title + "\n" + details;
+        }
+
+        // (ตัดคำสั่งปิด messageText ออกไปแล้ว ตัวอื่นจึงไม่ถูกปิดเกะกะครับ)
     }
 
     private void CheckRestartInput()
@@ -170,11 +194,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void RestartGame()
+    public void RestartGame()
     {
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().buildIndex
         );
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     public void SetAmmo(int currentAmmo, int magazineSize, int reserveAmmo)
@@ -195,5 +224,36 @@ public class GameManager : MonoBehaviour
                 reserveAmmo;
         }
     }
-}
 
+    // ฟังก์ชันสำหรับแสดงข้อความแจ้งเตือนบนจอ (เช่น Press R to Reload)
+    public void ShowMessage(string message)
+    {
+        if (messageText != null)
+        {
+            messageText.gameObject.SetActive(true);
+            messageText.text = message;
+        }
+    }
+
+    // ฟังก์ชันสำหรับซ่อนข้อความแจ้งเตือน
+    public void HideMessage()
+    {
+        if (messageText != null)
+        {
+            messageText.gameObject.SetActive(false);
+        }
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
+    public void PlayShootSound()
+    {
+        PlaySound(shootSound);
+    }
+}
