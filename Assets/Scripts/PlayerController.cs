@@ -179,7 +179,7 @@ Rigidbody rb;
     private void Shoot()
     {
         currentAmmo--;
-        Instantiate(  
+        FireBullet();
 
         GameManager.Instance.SetAmmo(
             currentAmmo,
