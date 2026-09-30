@@ -26,9 +26,6 @@ Rigidbody rb;
     public float dashCooldown = 3f;
     private bool canDash = true;
 
-    [Header("Animation")]
-    [SerializeField] private Animator animator;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -49,9 +46,8 @@ Rigidbody rb;
         ReadMovementInput();
         AimAtMouse();
         ReadShootingInput();
-        UpdateAnimation();
 
-
+        
     }
 
     private void FixedUpdate()
@@ -183,9 +179,7 @@ Rigidbody rb;
     private void Shoot()
     {
         currentAmmo--;
-
-        animator.SetTrigger("Shoot");
-        FireBullet();
+        Instantiate(  
 
         GameManager.Instance.SetAmmo(
             currentAmmo,
@@ -247,7 +241,6 @@ Rigidbody rb;
         {
             Debug.Log("Dashing");
             canDash = false;
-            
 
             Vector3 direction = transform.forward;
 
@@ -260,15 +253,6 @@ Rigidbody rb;
     private void ResetDash()
     {
         canDash = true;
-    }
-
-    private void UpdateAnimation()
-    {
-        if (animator == null)
-            return;
-        // Set the "Speed" parameter based on the player's movement
-        float speed = moveDirection.magnitude;
-        animator.SetFloat("Speed", speed);
     }
 }
 
