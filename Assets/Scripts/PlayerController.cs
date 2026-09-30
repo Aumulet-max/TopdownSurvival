@@ -7,12 +7,15 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
+
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float shootCooldown = 0.2f;
+
     [Header("Dash UI")]
     public UnityEngine.UI.Image dashCooldownBar; // หลอดคูลดาวน์แบบวิ่งจากซ้ายไปขวา
+
     [Header("Audio")]
     public AudioClip reloadSound;
     public AudioClip dashSound;
@@ -23,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection;
     private Quaternion targetRotation;
     private float nextShootTime;
+
     public int magazineSize = 30;
     public int currentAmmo = 30;
     public int reserveAmmo = 5;
@@ -90,13 +94,11 @@ public class PlayerController : MonoBehaviour
 
         if (Keyboard.current.spaceKey.wasPressedThisFrame && canDash)
         {
-            Debug.Log("Dashing0");
+            Debug.Log("Dashing");
             Dash();
         }
 
-        Vector3 input =
-            new Vector3(horizontal, 0f, vertical);
-
+        Vector3 input = new Vector3(horizontal, 0f, vertical);
         moveDirection = input.normalized;
     }
 
@@ -104,50 +106,33 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 velocity = moveDirection * moveSpeed;
 
-        rb.linearVelocity =
-            new Vector3(
-                velocity.x,
-                0f,
-                velocity.z
-            );
+        rb.linearVelocity = new Vector3(
+            velocity.x,
+            rb.linearVelocity.y, // คงค่าแรงโน้มถ่วงแนวแกน Y เดิมไว้
+            velocity.z
+        );
     }
 
     private void AimAtMouse()
     {
-        if (Mouse.current == null ||
-            mainCamera == null)
+        if (Mouse.current == null || mainCamera == null)
         {
             return;
         }
 
-        Vector2 mousePosition =
-            Mouse.current.position.ReadValue();
-
-        Ray ray =
-            mainCamera.ScreenPointToRay(mousePosition);
-
-        Plane groundPlane =
-            new Plane(
-                Vector3.up,
-                transform.position
-            );
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, transform.position);
 
         if (groundPlane.Raycast(ray, out float distance))
         {
-            Vector3 hitPoint =
-                ray.GetPoint(distance);
-
-            Vector3 lookDirection =
-                hitPoint - transform.position;
-
+            Vector3 hitPoint = ray.GetPoint(distance);
+            Vector3 lookDirection = hitPoint - transform.position;
             lookDirection.y = 0f;
 
             if (lookDirection.sqrMagnitude > 0.01f)
             {
-                targetRotation =
-                    Quaternion.LookRotation(
-                        lookDirection
-                    );
+                targetRotation = Quaternion.LookRotation(lookDirection);
             }
         }
     }
@@ -159,21 +144,22 @@ public class PlayerController : MonoBehaviour
 
     private void ReadShootingInput()
     {
-        if (Mouse.current == null)
+        if (Mouse.current == null || Keyboard.current == null)
             return;
 
+        // ยิงกระสุนด้วยคลิกซ้าย (และต้องไม่อยู่ระหว่างรีโหลด)
         if (Mouse.current.leftButton.isPressed &&
-            Time.time >= nextShootTime)
+            Time.time >= nextShootTime &&
+            !isReloading)
         {
             if (currentAmmo > 0)
             {
                 Shoot();
-
-                nextShootTime =
-                    Time.time + shootCooldown;
+                nextShootTime = Time.time + shootCooldown;
             }
         }
 
+        // รีโหลดด้วยปุ่ม R
         if (Keyboard.current.rKey.wasPressedThisFrame && !isReloading)
         {
             if (reserveAmmo > 0 && currentAmmo < magazineSize)
@@ -186,31 +172,25 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         currentAmmo--;
-
         FireBullet();
 
-        GameManager.Instance.SetAmmo(
-            currentAmmo,
-            magazineSize,
-            reserveAmmo
-        );
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        }
     }
 
     private void FireBullet()
     {
-
-        Instantiate(
-            bulletPrefab,
-            firePoint.position,
-            firePoint.rotation
-        );
+        if (bulletPrefab != null && firePoint != null)
+        {
+            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        }
 
         if (GameManager.Instance != null)
         {
             GameManager.Instance.PlayShootSound();
         }
-
-        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
 
     private void Reload()
@@ -222,8 +202,17 @@ public class PlayerController : MonoBehaviour
         if (playerAudio != null && reloadSound != null)
             playerAudio.PlayOneShot(reloadSound);
 
-        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        }
+
         Invoke(nameof(FinishReload), reloadTime);
+    }
+
+    public void FinishReload()
+    {
+        isReloading = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -232,7 +221,10 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Picked up ammo");
             reserveAmmo++;
-            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+            }
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("health"))
@@ -241,16 +233,10 @@ public class PlayerController : MonoBehaviour
             PlayerHealth playerHealth = GetComponent<PlayerHealth>();
             if (playerHealth != null && playerHealth.HasHealth())
             {
-                playerHealth.TakeDamage(-1);
+                playerHealth.TakeDamage(-1); // Heal 1 health
             }
-
             Destroy(other.gameObject);
         }
-    }
-
-    public void FinishReload()
-    {
-        isReloading = false;
     }
 
     private void CheckAmmoWarning()
@@ -289,7 +275,6 @@ public class PlayerController : MonoBehaviour
         canDash = true;
     }
 
-    // ฟังก์ชันอัปเดตหลอดคูลดาวน์ Dash แบบวิ่งจากซ้ายไปขวา
     private void UpdateDashCooldownUI()
     {
         if (dashCooldownBar == null) return;
