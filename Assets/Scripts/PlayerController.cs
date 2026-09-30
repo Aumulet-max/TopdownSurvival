@@ -176,12 +176,13 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         currentAmmo--;
-        animator.SetTrigger("Shoot");
         FireBullet();
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
-        }
+
+        GameManager.Instance.SetAmmo(
+            currentAmmo,
+            magazineSize,
+            reserveAmmo
+        );
     }
 
     private void FireBullet()
