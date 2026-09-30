@@ -176,26 +176,24 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         currentAmmo--;
-        animator.SetTrigger("Shoot");
         FireBullet();
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
-        }
+
+        GameManager.Instance.SetAmmo(
+            currentAmmo,
+            magazineSize,
+            reserveAmmo
+        );
     }
 
     private void FireBullet()
     {
-        if (bulletPrefab != null && firePoint != null)
-        {
-            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-        }
-
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.PlayShootSound();
-        }
+        Instantiate(
+            bulletPrefab,
+            firePoint.position,
+            firePoint.rotation
+        );
     }
+
 
     private void Reload()
     {
