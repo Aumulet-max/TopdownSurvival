@@ -186,6 +186,19 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         currentAmmo--;
+
+        FireBullet();
+
+        GameManager.Instance.SetAmmo(
+            currentAmmo,
+            magazineSize,
+            reserveAmmo
+        );
+    }
+
+    private void FireBullet()
+    {
+
         Instantiate(
             bulletPrefab,
             firePoint.position,
