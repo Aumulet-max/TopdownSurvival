@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/New Script Graph.asset.meta
 guid: 637ba27391bf14145b2f94a9ed5acca7
 NativeFormatImporter:
+=======
+guid: b20b0e4bde2082940a128c1242d8a57d
+DefaultImporter:
+>>>>>>> Stashed changes:Assets/Scenes/Menu.unity.meta
   externalObjects: {}
   mainObjectFileID: 11400000
   userData: 
