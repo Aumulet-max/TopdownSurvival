@@ -187,13 +187,16 @@ public class PlayerController : MonoBehaviour
 
     private void FireBullet()
     {
-        Instantiate(
-            bulletPrefab,
-            firePoint.position,
-            firePoint.rotation
-        );
-    }
+        if (bulletPrefab != null && firePoint != null)
+        {
+            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        }
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.PlayShootSound();
+        }
+    }
 
     private void Reload()
     {
