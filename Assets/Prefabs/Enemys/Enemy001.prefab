@@ -3828,7 +3828,7 @@ Animator:
   m_GameObject: {fileID: 5762902411667481585}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: eeebdeb8be91e0e43ae9170c2d8e4279, type: 3}
-  m_Controller: {fileID: 9100000, guid: f5e71d2eda3d6cc40857811c187df502, type: 2}
+  m_Controller: {fileID: 9100000, guid: c656affcbd3eca04e922be5c6f3ade82, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -3860,6 +3860,8 @@ MonoBehaviour:
   healthPack: {fileID: 4505828846205012363, guid: fae10db32f1220544bc70f50b1783cd3, type: 3}
   ammoDropChance: 15
   healthPackDropChance: 10
+  animator: {fileID: 5762902411660218455}
+  deathAnimationTime: 1
 --- !u!54 &4179389409068318902
 Rigidbody:
   m_ObjectHideFlags: 0

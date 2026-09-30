@@ -181,13 +181,22 @@ Rigidbody rb;
         currentAmmo--;
         Instantiate(  
 
+        GameManager.Instance.SetAmmo(
+            currentAmmo,
+            magazineSize,
+            reserveAmmo
+        );
+    }
+
+    private void FireBullet()
+    {
+        Instantiate(
             bulletPrefab,
             firePoint.position,
             firePoint.rotation
         );
-        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
     }
-    
+
 
     private void Reload()
     {
