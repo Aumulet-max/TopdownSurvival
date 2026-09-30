@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour
     private bool canDash = true;
     private float dashCooldownTimer = 0f; // ตัวแปรสำหรับจับเวลาคูลดาวน์
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -64,6 +67,7 @@ public class PlayerController : MonoBehaviour
         ReadShootingInput();
         CheckAmmoWarning();
         UpdateDashCooldownUI(); // อัปเดตหลอดคูลดาวน์ Dash ทุกเฟรม
+        UpdateAnimation();
     }
 
     private void FixedUpdate()
@@ -172,8 +176,8 @@ public class PlayerController : MonoBehaviour
     private void Shoot()
     {
         currentAmmo--;
+        animator.SetTrigger("Shoot");
         FireBullet();
-
         if (GameManager.Instance != null)
         {
             GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
@@ -288,5 +292,14 @@ public class PlayerController : MonoBehaviour
         {
             dashCooldownBar.fillAmount = 1f;
         }
+    }
+
+        private void UpdateAnimation()
+    {
+        if (animator == null)
+            return;
+        // Set the "Speed" parameter based on the player's movement
+        float speed = moveDirection.magnitude;
+        animator.SetFloat("Speed", speed);
     }
 }
