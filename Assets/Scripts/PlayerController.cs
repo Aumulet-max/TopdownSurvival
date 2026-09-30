@@ -7,30 +7,47 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 6f;
+
     [Header("Shooting")]
     public GameObject bulletPrefab;
     public Transform firePoint;
     public float shootCooldown = 0.2f;
-Rigidbody rb;
+
+    [Header("Dash UI")]
+    public UnityEngine.UI.Image dashCooldownBar; // หลอดคูลดาวน์แบบวิ่งจากซ้ายไปขวา
+
+    [Header("Audio")]
+    public AudioClip reloadSound;
+    public AudioClip dashSound;
+    private AudioSource playerAudio;
+
+    Rigidbody rb;
     private Camera mainCamera;
     private Vector3 moveDirection;
     private Quaternion targetRotation;
     private float nextShootTime;
+
     public int magazineSize = 30;
     public int currentAmmo = 30;
     public int reserveAmmo = 5;
     public float reloadTime = 1.5f;
-    private bool isReloading = true;
+    private bool isReloading = false;
 
     public float dashforce = 200f;
     public float dashCooldown = 3f;
     private bool canDash = true;
+    private float dashCooldownTimer = 0f; // ตัวแปรสำหรับจับเวลาคูลดาวน์
+
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
         targetRotation = transform.rotation;
+        playerAudio = GetComponent<AudioSource>();
+        CheckAmmoWarning();
     }
 
     private void Update()
@@ -40,14 +57,17 @@ Rigidbody rb;
             GameManager.Instance.IsGameOver)
         {
             moveDirection = Vector3.zero;
+            if (GameManager.Instance != null)
+                GameManager.Instance.HideMessage();
             return;
         }
 
         ReadMovementInput();
         AimAtMouse();
         ReadShootingInput();
-
-        
+        CheckAmmoWarning();
+        UpdateDashCooldownUI(); // อัปเดตหลอดคูลดาวน์ Dash ทุกเฟรม
+        UpdateAnimation();
     }
 
     private void FixedUpdate()
@@ -75,15 +95,14 @@ Rigidbody rb;
 
         if (Keyboard.current.aKey.isPressed)
             horizontal -= 1f;
+
         if (Keyboard.current.spaceKey.wasPressedThisFrame && canDash)
         {
-            Debug.Log("Dashing0");
+            Debug.Log("Dashing");
             Dash();
         }
 
-        Vector3 input =
-            new Vector3(horizontal, 0f, vertical);
-
+        Vector3 input = new Vector3(horizontal, 0f, vertical);
         moveDirection = input.normalized;
     }
 
@@ -91,54 +110,33 @@ Rigidbody rb;
     {
         Vector3 velocity = moveDirection * moveSpeed;
 
-        rb.linearVelocity =
-            new Vector3(
-                velocity.x,
-                0f,
-                velocity.z
-            );
+        rb.linearVelocity = new Vector3(
+            velocity.x,
+            rb.linearVelocity.y, // คงค่าแรงโน้มถ่วงแนวแกน Y เดิมไว้
+            velocity.z
+        );
     }
 
     private void AimAtMouse()
     {
-        if (Mouse.current == null ||
-            mainCamera == null)
+        if (Mouse.current == null || mainCamera == null)
         {
             return;
         }
 
-        // ตำแหน่ง Mouse บน Screen
-        Vector2 mousePosition =
-            Mouse.current.position.ReadValue();
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, transform.position);
 
-        // ยิง Ray จากกล้อง
-        Ray ray =
-            mainCamera.ScreenPointToRay(mousePosition);
-
-        // สร้าง Plane สมมติในระดับเดียวกับ Player
-        Plane groundPlane =
-            new Plane(
-                Vector3.up,
-                transform.position
-            );
-
-        // ตรวจว่า Ray ตัด Plane หรือไม่
         if (groundPlane.Raycast(ray, out float distance))
         {
-            Vector3 hitPoint =
-                ray.GetPoint(distance);
-
-            Vector3 lookDirection =
-                hitPoint - transform.position;
-
+            Vector3 hitPoint = ray.GetPoint(distance);
+            Vector3 lookDirection = hitPoint - transform.position;
             lookDirection.y = 0f;
 
             if (lookDirection.sqrMagnitude > 0.01f)
             {
-                targetRotation =
-                    Quaternion.LookRotation(
-                        lookDirection
-                    );
+                targetRotation = Quaternion.LookRotation(lookDirection);
             }
         }
     }
@@ -150,28 +148,27 @@ Rigidbody rb;
 
     private void ReadShootingInput()
     {
-        if (Mouse.current == null)
+        if (Mouse.current == null || Keyboard.current == null)
             return;
 
+        // ยิงกระสุนด้วยคลิกซ้าย (และต้องไม่อยู่ระหว่างรีโหลด)
         if (Mouse.current.leftButton.isPressed &&
-            Time.time >= nextShootTime)
+            Time.time >= nextShootTime &&
+            !isReloading)
         {
             if (currentAmmo > 0)
             {
                 Shoot();
-
-                nextShootTime =
-                    Time.time + shootCooldown;
+                nextShootTime = Time.time + shootCooldown;
             }
         }
 
-        if (Mouse.current.rightButton.wasPressedThisFrame && isReloading)
+        // รีโหลดด้วยปุ่ม R
+        if (Keyboard.current.rKey.wasPressedThisFrame && !isReloading)
         {
-            if (reserveAmmo > 0 )
+            if (reserveAmmo > 0 && currentAmmo < magazineSize)
             {
-             
                 Reload();
-
             }
         }
     }
@@ -179,32 +176,47 @@ Rigidbody rb;
     private void Shoot()
     {
         currentAmmo--;
+        animator.SetTrigger("Shoot");
         FireBullet();
-
-        GameManager.Instance.SetAmmo(
-            currentAmmo,
-            magazineSize,
-            reserveAmmo
-        );
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        }
     }
 
     private void FireBullet()
     {
-        Instantiate(
-            bulletPrefab,
-            firePoint.position,
-            firePoint.rotation
-        );
-    }
+        if (bulletPrefab != null && firePoint != null)
+        {
+            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        }
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.PlayShootSound();
+        }
+    }
 
     private void Reload()
     {
-        isReloading = false;
+        isReloading = true;
         reserveAmmo--;
         currentAmmo = magazineSize;
-        GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+
+        if (playerAudio != null && reloadSound != null)
+            playerAudio.PlayOneShot(reloadSound);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+        }
+
         Invoke(nameof(FinishReload), reloadTime);
+    }
+
+    public void FinishReload()
+    {
+        isReloading = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -213,7 +225,10 @@ Rigidbody rb;
         {
             Debug.Log("Picked up ammo");
             reserveAmmo++;
-            GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.SetAmmo(currentAmmo, magazineSize, reserveAmmo);
+            }
             Destroy(other.gameObject);
         }
         else if (other.CompareTag("health"))
@@ -224,27 +239,36 @@ Rigidbody rb;
             {
                 playerHealth.TakeDamage(-1); // Heal 1 health
             }
-
             Destroy(other.gameObject);
         }
-
     }
 
-    public void FinishReload()
+    private void CheckAmmoWarning()
     {
-        isReloading = true;
+        if (GameManager.Instance == null) return;
+
+        if (currentAmmo == 0 && reserveAmmo > 0 && !isReloading)
+        {
+            GameManager.Instance.ShowMessage("PRESS R TO RELOAD");
+        }
+        else
+        {
+            GameManager.Instance.HideMessage();
+        }
     }
 
     private void Dash()
     {
         if (canDash)
         {
-            Debug.Log("Dashing");
             canDash = false;
+            dashCooldownTimer = dashCooldown; // เริ่มต้นนับเวลาคูลดาวน์
 
             Vector3 direction = transform.forward;
-
             rb.AddForce(direction * dashforce, ForceMode.Impulse);
+
+            if (playerAudio != null && dashSound != null)
+                playerAudio.PlayOneShot(dashSound);
 
             Invoke(nameof(ResetDash), dashCooldown);
         }
@@ -254,5 +278,28 @@ Rigidbody rb;
     {
         canDash = true;
     }
-}
 
+    private void UpdateDashCooldownUI()
+    {
+        if (dashCooldownBar == null) return;
+
+        if (!canDash)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+            dashCooldownBar.fillAmount = 1f - (dashCooldownTimer / dashCooldown);
+        }
+        else
+        {
+            dashCooldownBar.fillAmount = 1f;
+        }
+    }
+
+    private void UpdateAnimation()
+    {
+        if (animator == null)
+            return;
+        // Set the "Speed" parameter based on the player's movement
+        float speed = moveDirection.magnitude;
+        animator.SetFloat("Speed", speed);
+    }
+}
